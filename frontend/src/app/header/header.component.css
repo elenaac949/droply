@@ -1,0 +1,58 @@
+/* Estilo base del header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e3f2fd; 
+    padding: 16px 40px;
+    box-shadow: 0 2px 8px rgba(0, 51, 102, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+  
+ 
+  .logo {
+    height: 48px;
+    width: auto;
+  }
+  
+  
+  .nav-links {
+    list-style: none;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+  
+ 
+  .nav-links a {
+    text-decoration: none;
+    color: #003366; 
+    font-weight: 500;
+    font-size: 15px;
+    transition: color 0.3s ease;
+  }
+  
+  .nav-links a:hover {
+    color: #0056b3; 
+  }
+  
+  
+  .nav-links button {
+    background-color: #007bff; 
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .nav-links button:hover {
+    background-color: #0056b3;
+  }
+  
