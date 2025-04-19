@@ -1,24 +1,23 @@
 <header class="header">
-    <img src="assets/logo-droply.png" alt="Logo de Droply" class="logo">
-  
-    <nav>
-      <ul class="nav-links">
-        <!-- Mostrar solo si NO estamos en la landing -->
-        <li *ngIf="!isLanding">
-          <button (click)="onAddWaterPoint()">Añadir punto de agua</button>
-        </li>
-        <li *ngIf="!isLanding">
-          <a routerLink="/perfil">Perfil</a>
-        </li>
-  
-        <!-- Mostrar solo en la landing -->
-        <li *ngIf="isLanding">
-          <a routerLink="/login">Iniciar sesión</a>
-        </li>
-        <li *ngIf="isLanding">
-          <a routerLink="/registro">Registro</a>
-        </li>
-      </ul>
-    </nav>
-  </header>
+  <img src="assets/logo-droply.png" alt="Logo" class="logo">
+  <nav>
+    <ul class="nav-links">
+      <!-- Botones para usuarios NO autenticados -->
+      <li *ngIf="showAuthButtons">
+        <a routerLink="/login">Iniciar sesión</a>
+      </li>
+      <li *ngIf="showAuthButtons">
+        <a routerLink="/register">Registro</a>
+      </li>
+
+      <!-- Botones para usuarios autenticados (ocultos en login/register) -->
+      <li *ngIf="!showAuthButtons">
+        <button >Añadir punto de agua</button>
+      </li>
+      <li *ngIf="!showAuthButtons">
+        <a routerLink="/perfil">Perfil</a>
+      </li>
+    </ul>
+  </nav>
+</header>
   

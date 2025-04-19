@@ -1,31 +1,22 @@
-/* Estilos generales del footer */
+
 .footer {
     display: flex;
     justify-content: space-between;
-    /* Espaciado entre las secciones */
     align-items: center;
-    /* Alineación vertical */
     padding: 30px 60px;
-    /* Padding generoso */
     background-color: #003366;
-    /* Azul oscuro elegante */
     color: #fff;
-    /* Texto blanco */
     border-top: 3px solid #fff;
-    /* Línea divisoria blanca */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* Fuente elegante */
 }
 
 .footer-section,
 .footer-social {
     flex: 1;
-    /* Se adapta al espacio disponible */
 }
 
 .footer-logo img {
     max-width: 150px;
-    /* Tamaño del logo ajustado */
     height: auto;
 }
 
@@ -43,30 +34,22 @@ footer li {
 footer li a {
     text-decoration: none;
     color: #fff;
-    /* Texto blanco para los enlaces */
     font-size: 14px;
-    /* Tamaño de fuente moderado */
     font-weight: 500;
-    /* Peso de fuente medio */
     transition: color 0.3s ease;
-    /* Transición suave al cambiar color */
 }
 
 footer li a:hover {
     color: #66ccff;
-    /* Color azul claro al pasar el ratón */
 }
 
-/* Estilo para las redes sociales */
 .footer-social ul {
     display: flex;
     gap: 20px;
-    /* Espaciado entre las redes sociales */
 }
 
 .footer-social li {
     font-size: 16px;
-    /* Tamaño de fuente más grande para redes */
 }
 
 .footer-social li a {
@@ -75,27 +58,21 @@ footer li a:hover {
 
 .footer-social li a:hover {
     color: #66ccff;
-    /* Color azul claro al pasar el ratón */
 }
 
 /* Ajustes responsivos */
 @media (max-width: 768px) {
     .footer {
         flex-direction: column;
-        /* En pantallas pequeñas, se apilan las secciones */
         align-items: center;
-        /* Centra los items */
         padding: 20px;
-        /* Reduce padding en pantallas pequeñas */
     }
 
     .footer-section,
     .footer-social {
         flex: none;
         text-align: center;
-        /* Centra el texto */
         margin-bottom: 15px;
-        /* Espaciado entre las secciones */
     }
 
     .footer-logo {

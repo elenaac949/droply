@@ -1,26 +1,30 @@
 import { Component } from '@angular/core';
-import { Router, NavigationEnd} from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-header',
-  standalone:true,
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  isLanding=false;
+  showAuthButtons = false;
 
   constructor(private router: Router) {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        /* console.log('Ruta actual:', event.urlAfterRedirects); */
-        this.isLanding = event.urlAfterRedirects === '/';
+        // Obtenemos la ruta sin parámetros de query
+        const currentRoute = this.router.url.split('?')[0]; 
+        
+        // Definimos las rutas donde deben mostrarse los botones
+        const publicRoutes = ['/', '/login', '/register'];
+        
+        // Verificamos si la ruta actual está en la lista
+        this.showAuthButtons = publicRoutes.includes(currentRoute);
       }
     });
-  }
-
-  onAddWaterPoint() {
-    this.router.navigate(['/add-water-point']);
   }
 }

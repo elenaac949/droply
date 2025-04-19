@@ -34,6 +34,7 @@
     font-weight: 500;
     font-size: 15px;
     transition: color 0.3s ease;
+    cursor: pointer;
   }
   
   .nav-links a:hover {
