@@ -1,0 +1,57 @@
+.register-container {
+    max-width: 450px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #3f51b5;
+  }
+  
+  .full-width {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .error-message {
+    color: #f44336;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+  }
+  
+  .server-error {
+    text-align: center;
+    margin: 1rem 0;
+    font-size: 1rem;
+  }
+  
+  .login-link {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #666666;
+  }
+  
+  .login-link a {
+    color: #3f51b5;
+    text-decoration: none;
+  }
+  
+  .login-link a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Estilos para los campos de formulario */
+  mat-form-field {
+    width: 100%;
+  }
+  
+  /* Estilo para el botón deshabilitado */
+  button[disabled] {
+    background-color: #b0bec5 !important;
+    color: #eceff1 !important;
+  }

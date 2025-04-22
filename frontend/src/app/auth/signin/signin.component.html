@@ -1,15 +1,105 @@
-<div class="auth-container">
-  <h2>Registro</h2>
-  <form (ngSubmit)="onSubmit()">
-    <div>
-      <label>Email:</label>
-      <input type="email" [(ngModel)]="email" name="email" required>
+<div class="register-container">
+  <h1 class="title">Registro</h1>
+  
+  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <!-- Campo de Email -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input 
+        matInput 
+        formControlName="email" 
+        type="email"
+        placeholder="ejemplo@dominio.com"
+        required
+      >
+      <mat-icon matSuffix>email</mat-icon>
+      
+      <!-- Mensajes de error para email -->
+      <mat-error *ngIf="email?.hasError('required')">
+        El email es obligatorio
+      </mat-error>
+      <mat-error *ngIf="email?.hasError('email')">
+        Por favor ingresa un email válido
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Campo de Contraseña -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Contraseña</mat-label>
+      <input 
+        matInput 
+        [type]="hidePassword ? 'password' : 'text'" 
+        formControlName="password"
+        required
+      >
+      <button 
+        type="button" 
+        mat-icon-button 
+        matSuffix 
+        (click)="togglePasswordVisibility()"
+        [attr.aria-label]="hidePassword ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+      >
+        <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      
+      <!-- Mensajes de error para contraseña -->
+      <mat-error *ngIf="password?.hasError('required')">
+        La contraseña es obligatoria
+      </mat-error>
+      <mat-error *ngIf="password?.hasError('minlength')">
+        Mínimo 8 caracteres
+      </mat-error>
+      <mat-error *ngIf="password?.hasError('missingUpperCase')">
+        Debe contener al menos una mayúscula
+      </mat-error>
+      <mat-error *ngIf="password?.hasError('missingNumber')">
+        Debe contener al menos un número
+      </mat-error>
+      <mat-error *ngIf="password?.hasError('missingSpecialChar')">
+        Debe contener al menos un carácter especial
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Campo de Confirmación de Contraseña -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Confirmar Contraseña</mat-label>
+      <input 
+        matInput 
+        type="password" 
+        formControlName="confirmPassword"
+        required
+      >
+      <mat-icon matSuffix>password</mat-icon>
+      
+      <!-- Mensajes de error para confirmación -->
+      <mat-error *ngIf="confirmPassword?.hasError('required')">
+        Confirma tu contraseña
+      </mat-error>
+      <mat-error *ngIf="registerForm.hasError('passwordMismatch')">
+        Las contraseñas no coinciden
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Mensaje de error del servidor -->
+    <div class="error-message server-error" *ngIf="errorMessage">
+      {{ errorMessage }}
     </div>
-    <div>
-      <label>Contraseña:</label>
-      <input type="password" [(ngModel)]="password" name="password" required>
-    </div>
-    <button type="submit">Registrarse</button>
+
+    <!-- Botón de envío -->
+    <button 
+      mat-raised-button 
+      color="primary" 
+      type="submit"
+      class="full-width"
+      [disabled]="registerForm.invalid || loading"
+    >
+      <span *ngIf="!loading">Registrarse</span>
+      <span *ngIf="loading">Registrando...</span>
+    </button>
   </form>
-  <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>
+
+  <!-- Enlace para usuarios existentes -->
+  <div class="login-link">
+    ¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a>
+  </div>
 </div>

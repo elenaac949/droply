@@ -8,14 +8,12 @@ export const noAuthGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   return authService.currentUser$.pipe(
-    map(user => {
-      if (!user) {
+    map(isAuthenticated => {
+      if (!isAuthenticated) {
         return true;
-      } else {
-        // Si ya está autenticado, redirige a home
-        router.navigate(['/home']);
-        return false;
       }
+      // Redirige a home si ya está autenticado
+      return router.createUrlTree(['/home']);
     })
   );
 };
