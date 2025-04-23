@@ -1,19 +1,16 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { map } from 'rxjs/operators';
 
-export const noAuthGuard: CanActivateFn = (route, state) => {
+export const noAuthGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  return authService.currentUser$.pipe(
-    map(isAuthenticated => {
-      if (!isAuthenticated) {
-        return true;
-      }
-      // Redirige a home si ya está autenticado
-      return router.createUrlTree(['/home']);
-    })
-  );
+  const user = authService.currentUser();
+  if (!user) {
+    return true;
+  } else {
+    router.navigate(['/']);
+    return false;
+  }
 };

@@ -1,78 +1,71 @@
-import { Injectable, inject } from '@angular/core';
-import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, User, user, UserCredential } from '@angular/fire/auth';
-import { Observable, from, map } from 'rxjs';
-import { throwError } from 'rxjs';
-import { catchError, shareReplay } from 'rxjs/operators';
-
+import { Injectable, inject,signal } from '@angular/core';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut , User,onAuthStateChanged} from '@angular/fire/auth';
+import { FirebaseError } from '@angular/fire/app';
+import { Router } from '@angular/router';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
+
 export class AuthService {
   private auth: Auth = inject(Auth);
-  // Observable público del estado de autenticación
-  currentUser$ = user(this.auth).pipe(
-    map(user => !!user), // Convertimos User | null a boolean
-    shareReplay(1) // Para evitar múltiples suscripciones
-  );
+  private router = inject(Router);
+  currentUser = signal<User | null>(null); 
 
-  // Obtener el usuario actual (sincrónico)
-  get currentUser(): User | null {
+
+  constructor() {
+    onAuthStateChanged(this.auth, (user) => {
+      this.currentUser.set(user);
+    });
+  }
+
+  private firebaseErrors: {[key: string]: string} = {
+    'auth/email-already-in-use': 'El correo electrónico ya está en uso',
+    'auth/invalid-email': 'El correo electrónico no es válido',
+    'auth/operation-not-allowed': 'Operación no permitida',
+    'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres',
+    'auth/user-disabled': 'La cuenta ha sido deshabilitada',
+    'auth/user-not-found': 'No se encontró el usuario',
+    'auth/wrong-password': 'Contraseña incorrecta'
+  };
+
+  getErrorMessage(code: string): string {
+    return this.firebaseErrors[code] || 'Ocurrió un error desconocido';
+  }
+
+
+  async register(email: string, password: string) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      return { user: userCredential.user, error: null };
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        return { user: null, error: this.getErrorMessage(error.code) };
+      }
+      return { user: null, error: 'Error desconocido' };
+    }
+  }
+
+  async login(email: string, password: string) {
+    try {
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      return { user: userCredential.user, error: null };
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        return { user: null, error: this.getErrorMessage(error.code) };
+      }
+      return { user: null, error: 'Error desconocido' };
+    }
+  }
+
+  async logout() {
+    try {
+      await signOut(this.auth);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getCurrentUser() {
     return this.auth.currentUser;
-  }
-   /**
-   * Registra un nuevo usuario con email y contraseña
-   * @param email Email del usuario
-   * @param password Contraseña del usuario
-   * @returns Observable con el resultado de la operación
-   */
-  register(email: string, password: string): Observable<UserCredential> {
-    return from(createUserWithEmailAndPassword(this.auth, email, password)).pipe(
-      catchError(error => {
-        // Handle specific Firebase errors
-        let errorMessage = 'An unknown error occurred';
-        switch(error.code) {
-          case 'auth/email-already-in-use':
-            errorMessage = 'Email is already in use';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Invalid email address';
-            break;
-          case 'auth/weak-password':
-            errorMessage = 'Password should be at least 6 characters';
-            break;
-        }
-        return throwError(() => new Error(errorMessage));
-      })
-    );
-  }
-
-  /**
-   * Inicia sesión con email y contraseña
-   * @param email Email del usuario
-   * @param password Contraseña del usuario
-   * @returns Observable con el resultado de la operación
-   */
-
-  login(email: string, password: string): Observable<UserCredential> {
-    return from(signInWithEmailAndPassword(this.auth, email, password)).pipe(
-      catchError(error => {
-        // Handle login errors
-        let errorMessage = 'Login failed';
-        if (error.code === 'auth/user-not-found') {
-          errorMessage = 'User not found';
-        } else if (error.code === 'auth/wrong-password') {
-          errorMessage = 'Incorrect password';
-        }
-        return throwError(() => new Error(errorMessage));
-      })
-    );
-  }
-
-   /**
-   * Cierra la sesión del usuario actual
-   * @returns Observable que se completa cuando termina la operación
-   */
-  logout(): Observable<void> {
-    return from(signOut(this.auth));
   }
 }

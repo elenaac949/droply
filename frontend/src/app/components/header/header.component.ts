@@ -1,8 +1,7 @@
-import { Component,inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink,RouterLinkActive } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { User } from 'firebase/auth';
 
 @Component({
   selector: 'app-header',
@@ -15,8 +14,9 @@ export class HeaderComponent {
   authService = inject(AuthService);
   router = inject(Router);
 
-  get user(): User | null {
-    return this.authService.currentUser;
+  
+  get user() {
+    return this.authService.currentUser();
   }
 
   isAdmin(): boolean {
@@ -24,10 +24,12 @@ export class HeaderComponent {
     return this.user.email === 'admin@droply.com'; 
   }
 
-  logout() {
-    this.authService.logout().subscribe({
-      next: () => this.router.navigate(['/']),
-      error: (err) => console.error('Error al cerrar sesión:', err)
-    });
+  async logout() {
+    try {
+      await this.authService.logout();
+      this.router.navigate(['/']);
+    } catch (err: unknown) {
+      console.error('Error al cerrar sesión:', err);
+    }
   }
 }

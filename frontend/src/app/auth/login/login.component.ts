@@ -1,34 +1,55 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  standalone:true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  email = '';
-  password = '';
+  private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
 
- 
-  onSubmit() {
-    this.authService.login(this.email, this.password)
-      .subscribe({
-        next: () => {
-          // Obtiene el returnUrl de los query params o redirige a home por defecto
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/home';
-          this.router.navigateByUrl(returnUrl);
-        },
-        error: (err) => console.error('Error en login:', err)
-      });
+  isLoading = false;
+  firebaseError = '';
+
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required]
+  });
+
+  async onLogin() {
+    if (this.loginForm.invalid) return;
+
+    this.isLoading = true;
+    this.firebaseError = '';
+
+    try {
+      const { email, password } = this.loginForm.value;
+      
+      if (!email || !password) {
+        this.isLoading = false;
+        return;
+      }
+
+      const result = await this.authService.login(email, password);
+      
+      if (result.error) {
+        this.firebaseError = result.error;
+      } else {
+        this.router.navigate(['/']);
+      }
+    } catch (error) {
+      console.error('Error en login:', error);
+      this.firebaseError = 'Ocurrió un error durante el login';
+    } finally {
+      this.isLoading = false;
+    }
   }
 }
